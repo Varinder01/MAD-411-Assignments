@@ -1,0 +1,28 @@
+package com.example.myapp
+
+import android.os.Bundle
+import android.view.View
+import android.widget.TextView
+import androidx.fragment.app.Fragment
+
+class FooterFragment : Fragment(R.layout.fragment_footer) {
+    private lateinit var totalTextView: TextView
+    private var totalAmount: Double = 0.0
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        totalTextView = view.findViewById(R.id.total_text_view)
+        updateTotal()
+    }
+
+
+    fun updateTotal() {
+        totalTextView.text = "Total Expenses: $${totalAmount}"
+    }
+
+
+    fun addExpense(expenseAmount: Double) {
+        totalAmount += expenseAmount
+        updateTotal()
+    }
+}

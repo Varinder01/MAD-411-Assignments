@@ -1,0 +1,50 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:gravity="center">
+
+    <FrameLayout
+        android:id="@+id/header_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <EditText
+        android:id="@+id/expense_name"
+        android:layout_width="384dp"
+        android:layout_height="61dp"
+        android:hint="Expense Name"
+        android:inputType="text" />
+
+    <EditText
+        android:id="@+id/amount"
+        android:layout_width="379dp"
+        android:layout_height="58dp"
+        android:hint="Amount"
+        android:inputType="numberDecimal" />
+
+    <Button
+        android:id="@+id/add_expense_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Add Expense"/>
+
+    <Button
+        android:id="@+id/financial_tips_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Financial Tips"/>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerview_expenses"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"/>
+
+    <FrameLayout
+        android:id="@+id/footer_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+</LinearLayout>
