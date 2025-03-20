@@ -2,7 +2,9 @@ package com.example.myapp
 
 //Name-VarinderPalSingh
 //studentnumber-0834091
+import android.annotation.SuppressLint
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.Button
 import android.widget.EditText
@@ -12,6 +14,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 
 class MainActivity : AppCompatActivity() {
+
     private lateinit var expenseNameEditText: EditText
     private lateinit var amountEditText: EditText
     private lateinit var addExpenseButton: Button
@@ -20,15 +23,16 @@ class MainActivity : AppCompatActivity() {
 
     private val expensesList = mutableListOf<Expense>()
 
+    @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        Log.d("ActivityLifecycle", "onCreate called")
 
         expenseNameEditText = findViewById(R.id.expense_name)
         amountEditText = findViewById(R.id.amount)
         addExpenseButton = findViewById(R.id.add_expense_button)
         recyclerView = findViewById(R.id.recyclerview_expenses)
-
 
         recyclerView.layoutManager = LinearLayoutManager(this)
         expenseAdapter = ExpenseAdapter(expensesList)
@@ -39,6 +43,31 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    override fun onStart() {
+        super.onStart()
+        Log.d("ActivityLifecycle", "onStart called")
+    }
+
+    override fun onResume() {
+        super.onResume()
+        Log.d("ActivityLifecycle", "onResume called")
+    }
+
+    override fun onPause() {
+        super.onPause()
+        Log.d("ActivityLifecycle", "onPause called")
+    }
+
+    override fun onStop() {
+        super.onStop()
+        Log.d("ActivityLifecycle", "onStop called")
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        Log.d("ActivityLifecycle", "onDestroy called")
+    }
+
     private fun addExpense() {
         val name = expenseNameEditText.text.toString()
         val amount = amountEditText.text.toString()
@@ -46,12 +75,8 @@ class MainActivity : AppCompatActivity() {
         if (name.isNotEmpty() && amount.isNotEmpty()) {
             val newExpense = Expense(name, amount)
             expensesList.add(newExpense)
-
-
             expenseAdapter.notifyItemInserted(expensesList.size - 1)
-
-
+        }
     }
-    }
-}
+   }
 
