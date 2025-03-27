@@ -51,7 +51,7 @@ class MainActivity : AppCompatActivity() {
             expenseAdapter.notifyItemInserted(expensesList.size - 1)
 
 
-    }
+        }
     }
 }
 
