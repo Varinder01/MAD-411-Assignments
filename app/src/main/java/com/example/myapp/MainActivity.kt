@@ -49,6 +49,10 @@ class MainActivity : AppCompatActivity() {
             .replace(R.id.header_container, headerFragment)
             .commit()
 
+        // code for getting expenses from file when view added
+        expensesList.addAll(expenseAdapter.expensesFromFile(this))
+        expenseAdapter.notifyDataSetChanged()
+
         addExpenseButton.setOnClickListener {
             addExpense()
         }
@@ -72,6 +76,8 @@ class MainActivity : AppCompatActivity() {
 
 
             footerFragment.addExpense(expenseAmount)
+            // re updating the file when added
+            expenseAdapter.expensesToFile(this, expensesList)
         } else {
             Toast.makeText(this, "Please enter both name and amount", Toast.LENGTH_SHORT).show()
         }

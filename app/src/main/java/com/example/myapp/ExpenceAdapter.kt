@@ -1,12 +1,19 @@
 package com.example.myapp
 
+import android.content.Context
 import android.content.Intent
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.google.firebase.crashlytics.buildtools.reloc.com.google.common.reflect.TypeToken
+import com.google.gson.Gson
+import java.io.File
+import java.io.FileNotFoundException
+import java.io.IOException
 
 class ExpenseAdapter(private val expenses: MutableList<Expense>) :
     RecyclerView.Adapter<ExpenseAdapter.ExpenseViewHolder>() {
@@ -36,6 +43,9 @@ class ExpenseAdapter(private val expenses: MutableList<Expense>) :
         holder.deleteButton.setOnClickListener {
             expenses.removeAt(position)
             notifyItemRemoved(position)
+
+            //updated expense to file
+            expensesToFile(holder.itemView.context, expenses)
         }
     }
 
@@ -48,5 +58,37 @@ class ExpenseAdapter(private val expenses: MutableList<Expense>) :
         val amountTextView: TextView = itemView.findViewById(R.id.expense_amount_text)
         val showDetailsButton: Button = itemView.findViewById(R.id.expense_show_details_button)
         val deleteButton: Button = itemView.findViewById(R.id.expense_delete_button)
+    }
+
+// code to iterate with file
+     fun expensesToFile(context: Context, expensesList: List<Expense>) {
+        try {
+            val json = Gson().toJson(expensesList)
+            context.openFileOutput("expenses.json", Context.MODE_PRIVATE).use { output ->
+                output.write(json.toByteArray())
+            }
+            Log.d("FileStorage", "Expenses saved successfully")
+        } catch (e: IOException) {
+            Log.e("FileStorage", "Error saving expenses: ${e.message}")
+        }
+    }
+
+     fun expensesFromFile(context: Context): MutableList<Expense> {
+        val expensesList: MutableList<Expense> = mutableListOf()
+        try {
+            val file = File(context.filesDir, "expenses.json")
+            if (!file.exists()) return expensesList
+
+            val json = file.readText()
+            val type = object : TypeToken<List<Expense>>() {}.type
+            val loadedExpenses: List<Expense> = Gson().fromJson(json, type)
+            expensesList.addAll(loadedExpenses)
+            Log.d("FileStorage", "Expenses loaded successfully")
+        } catch (e: FileNotFoundException) {
+            Log.e("FileStorage", "File not found: ${e.message}")
+        } catch (e: IOException) {
+            Log.e("FileStorage", "Error reading file: ${e.message}")
+        }
+        return expensesList
     }
 }

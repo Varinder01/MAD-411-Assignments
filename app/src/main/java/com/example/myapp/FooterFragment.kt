@@ -25,4 +25,8 @@ class FooterFragment : Fragment(R.layout.fragment_footer) {
         totalAmount += expenseAmount
         updateTotal()
     }
+    fun deleteExpense(expenseAmount: Double) {
+        totalAmount -= expenseAmount
+        updateTotal()
+    }
 }
