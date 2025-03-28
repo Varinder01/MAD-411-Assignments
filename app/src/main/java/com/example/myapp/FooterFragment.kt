@@ -1,6 +1,7 @@
 package com.example.myapp
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.TextView
 import androidx.fragment.app.Fragment
@@ -17,6 +18,7 @@ class FooterFragment : Fragment(R.layout.fragment_footer) {
 
 
     fun updateTotal() {
+        Log.d("UpdateTotal", totalTextView.text.toString())
         totalTextView.text = "Total Expenses: $${totalAmount}"
     }
 

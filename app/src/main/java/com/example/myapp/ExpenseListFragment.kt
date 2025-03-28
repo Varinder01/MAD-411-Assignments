@@ -67,7 +67,13 @@ class ExpenseListFragment : Fragment(R.layout.expense_list_fragment) {
         financialTipsButton.setOnClickListener {
             val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://www.easyfinancial.com"))
             startActivity(intent)
+
+
         }
+    }
+
+    private fun calcSum(): Double{
+        return expensesList.sumByDouble { it.amount.toDouble() }
     }
 
     private fun addExpense() {
@@ -94,5 +100,11 @@ class ExpenseListFragment : Fragment(R.layout.expense_list_fragment) {
         } else {
             Toast.makeText(context, "Please enter both name and amount", Toast.LENGTH_SHORT).show()
         }
+    }
+
+    override fun onStart() {
+        super.onStart()
+
+        footerFragment.addExpense(calcSum())
     }
 }
