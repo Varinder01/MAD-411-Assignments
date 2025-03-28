@@ -1,0 +1,61 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#04B7A5"
+    android:backgroundTint="#08988D"
+    android:gravity="center"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <FrameLayout
+        android:id="@+id/header_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <EditText
+        android:id="@+id/expense_name"
+        android:layout_width="384dp"
+        android:layout_height="61dp"
+        android:hint="Expense Name"
+        android:inputType="text" />
+
+    <EditText
+        android:id="@+id/amount"
+        android:layout_width="379dp"
+        android:layout_height="58dp"
+        android:hint="Amount"
+        android:inputType="numberDecimal"
+        android:textColorLink="#141010" />
+
+    <Button
+        android:id="@+id/add_expense_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:backgroundTint="#222121"
+        android:text="Add Expense"
+        android:textColor="#D5DEDE"
+        android:textColorLink="#140E0E" />
+
+    <Button
+        android:id="@+id/financial_tips_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:backgroundTint="#262323"
+        android:text="Financial Tips"
+        android:textColor="#DEE2E2"
+        android:textColorLink="#0B0909" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerview_expenses"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:background="#F6F4F4"
+        android:backgroundTint="#77120404" />
+
+    <FrameLayout
+        android:id="@+id/footer_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+</LinearLayout>

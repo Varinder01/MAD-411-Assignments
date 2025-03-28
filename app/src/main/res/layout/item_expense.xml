@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="#72918E"
     android:orientation="horizontal"
     android:padding="16dp">
 
@@ -9,26 +10,28 @@
         android:id="@+id/nameTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_weight="1"
         android:text="Expense Name"
-        android:textSize="16sp"
-        android:layout_weight="1"/>
+        android:textSize="16sp" />
 
     <TextView
         android:id="@+id/amountTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_weight="1"
         android:text="Amount"
-        android:textSize="16sp"
-        android:layout_weight="1"/>
+        android:textSize="16sp" />
+
     <TextView
         android:id="@+id/expenseDateTextView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Date" />
+        android:text="Date"
+        android:textColor="#05332E" />
 
     <Button
         android:id="@+id/deleteButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Delete"/>
+        android:text="Delete" />
 </LinearLayout>

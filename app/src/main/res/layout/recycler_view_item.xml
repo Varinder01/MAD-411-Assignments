@@ -11,27 +11,33 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
+        android:backgroundTint="#323D3C"
         android:text="Expense Name"
+        android:textColor="#F2EAEA"
         android:textSize="16sp" />
 
     <TextView
         android:id="@+id/expense_amount_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:backgroundTint="#46605D"
         android:text="$100.0"
+        android:textColor="#FFFDFD"
         android:textSize="16sp" />
 
     <Button
         android:id="@+id/expense_show_details_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Show Details"
         android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"/>
+        android:layout_marginEnd="8dp"
+        android:backgroundTint="#242121"
+        android:text="Show Details" />
 
     <Button
         android:id="@+id/expense_delete_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:backgroundTint="#1D1717"
         android:text="Delete" />
 </LinearLayout>

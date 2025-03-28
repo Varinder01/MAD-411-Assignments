@@ -2,12 +2,14 @@ package com.example.myapp
 
 import android.content.Context
 import android.content.Intent
+import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
+import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.crashlytics.buildtools.reloc.com.google.common.reflect.TypeToken
 import com.google.gson.Gson
@@ -31,13 +33,16 @@ class ExpenseAdapter(private val expenses: MutableList<Expense>) :
 
 
         holder.showDetailsButton.setOnClickListener {
-            val intent = Intent(holder.itemView.context, ExpenseDetailsActivity::class.java).apply {
-                putExtra("EXPENSE_NAME", expense.name)
-                putExtra("EXPENSE_AMOUNT", expense.amount)
-                putExtra("EXPENSE_DATE", expense.date)
+
+            val bundle = Bundle().apply {
+                putString("EXPENSE_NAME", expense.name)
+                putString("EXPENSE_AMOUNT", expense.amount)
+                putString("EXPENSE_DATE", expense.date)
             }
-            holder.itemView.context.startActivity(intent)
+            holder.itemView.findNavController().navigate(R.id.action_expenseListFragment_to_expenseDetailsFragment, bundle)
         }
+
+
 
 
         holder.deleteButton.setOnClickListener {
