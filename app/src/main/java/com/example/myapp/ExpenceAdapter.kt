@@ -1,8 +1,6 @@
 package com.example.myapp
 
 import android.content.Context
-import android.content.Intent
-import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -11,11 +9,13 @@ import android.widget.Button
 import android.widget.TextView
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
+import com.example.myapp.Expense
 import com.google.firebase.crashlytics.buildtools.reloc.com.google.common.reflect.TypeToken
 import com.google.gson.Gson
 import java.io.File
 import java.io.FileNotFoundException
 import java.io.IOException
+import android.os.Bundle
 
 class ExpenseAdapter(private val expenses: MutableList<Expense>) :
     RecyclerView.Adapter<ExpenseAdapter.ExpenseViewHolder>() {
@@ -29,34 +29,35 @@ class ExpenseAdapter(private val expenses: MutableList<Expense>) :
     override fun onBindViewHolder(holder: ExpenseViewHolder, position: Int) {
         val expense = expenses[position]
         holder.expenseNameTextView.text = expense.name
-        holder.amountTextView.text = expense.amount
 
+
+        val displayText = "${expense.amount} CAD → ${expense.convertedCost} ${expense.currency}"
+        holder.amountTextView.text = displayText
 
         holder.showDetailsButton.setOnClickListener {
-
             val bundle = Bundle().apply {
                 putString("EXPENSE_NAME", expense.name)
-                putString("EXPENSE_AMOUNT", expense.amount)
+                putString("EXPENSE_AMOUNT", expense.amount.toString() + " CAD")
                 putString("EXPENSE_DATE", expense.date)
+                putString("EXPENSE_CURRENCY", expense.currency)
+                putString("EXPENSE_CONVERTED", expense.convertedCost.toString())
             }
-            holder.itemView.findNavController().navigate(R.id.action_expenseListFragment_to_expenseDetailsFragment, bundle)
+            holder.itemView.findNavController().navigate(
+                R.id.action_expenseListFragment_to_expenseDetailsFragment,
+                bundle
+            )
         }
-
-
-
 
         holder.deleteButton.setOnClickListener {
             expenses.removeAt(position)
             notifyItemRemoved(position)
 
-            //updated expense to file
+            // Update the file
             expensesToFile(holder.itemView.context, expenses)
         }
     }
 
-    override fun getItemCount(): Int {
-        return expenses.size
-    }
+    override fun getItemCount(): Int = expenses.size
 
     inner class ExpenseViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val expenseNameTextView: TextView = itemView.findViewById(R.id.expense_name_text)
@@ -65,8 +66,8 @@ class ExpenseAdapter(private val expenses: MutableList<Expense>) :
         val deleteButton: Button = itemView.findViewById(R.id.expense_delete_button)
     }
 
-// code to iterate with file
-     fun expensesToFile(context: Context, expensesList: List<Expense>) {
+    // Saving to file
+    fun expensesToFile(context: Context, expensesList: List<Expense>) {
         try {
             val json = Gson().toJson(expensesList)
             context.openFileOutput("expenses.json", Context.MODE_PRIVATE).use { output ->
@@ -78,7 +79,7 @@ class ExpenseAdapter(private val expenses: MutableList<Expense>) :
         }
     }
 
-     fun expensesFromFile(context: Context): MutableList<Expense> {
+    fun expensesFromFile(context: Context): MutableList<Expense> {
         val expensesList: MutableList<Expense> = mutableListOf()
         try {
             val file = File(context.filesDir, "expenses.json")

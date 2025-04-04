@@ -29,7 +29,6 @@
         android:text="Date"
         android:textSize="18sp" />
 
-    <!-- Optional: Show currency -->
     <TextView
         android:id="@+id/expense_currency_details"
         android:layout_width="match_parent"
@@ -37,7 +36,6 @@
         android:text="Currency"
         android:textSize="18sp" />
 
-    <!-- Optional: Show converted cost -->
     <TextView
         android:id="@+id/expense_converted_details"
         android:layout_width="match_parent"

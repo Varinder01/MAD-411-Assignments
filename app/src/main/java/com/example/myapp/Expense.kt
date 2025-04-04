@@ -1,12 +1,9 @@
 package com.example.myapp
 
-import android.icu.util.Currency
-
 data class Expense(
     val name: String,
-    val amount: String,
+    val amount: Double,
     val date: String,
     val currency: String,
     val convertedCost: Double
-
 )

@@ -11,9 +11,9 @@ class ExpenseDetailsFragment : Fragment(R.layout.fragment_expense_details) {
     private lateinit var nameTextView: TextView
     private lateinit var amountTextView: TextView
     private lateinit var dateTextView: TextView
+
     private lateinit var currencyTextView: TextView
     private lateinit var convertedTextView: TextView
-
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
