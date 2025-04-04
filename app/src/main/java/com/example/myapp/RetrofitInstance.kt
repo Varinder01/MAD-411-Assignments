@@ -1,14 +1,12 @@
-package com.example.myapp.network
+package com.example.myapp
 
-
-
-import android.icu.util.Currency
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 object RetrofitInstance {
-    //Can use a static URL or use a var
-    private const val BASE_URL = "https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@2024-03-06/v1/"
+
+    private const val BASE_URL =
+        "https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/"
 
     val api: CurrencyApiService by lazy {
         Retrofit.Builder()

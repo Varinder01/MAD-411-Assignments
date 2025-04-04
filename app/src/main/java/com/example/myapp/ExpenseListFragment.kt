@@ -84,7 +84,7 @@ class ExpenseListFragment : Fragment(R.layout.expense_list_fragment) {
         if (name.isNotEmpty() && amount.isNotEmpty()) {
             try {
                 val expenseAmount = amount.toDouble()
-                val newExpense = Expense(name, amount, "2025-03-27", )
+                val newExpense = Expense(name, amount, "2025-03-27", currency = Currency , convertedCost = )
                 expensesList.add(newExpense)
                 expenseAdapter.notifyItemInserted(expensesList.size - 1)
 
