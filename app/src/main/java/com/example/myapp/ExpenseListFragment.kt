@@ -1,17 +1,17 @@
 package com.example.myapp
 
 import android.content.Intent
-import android.icu.util.Currency
 import android.net.Uri
 import android.os.Bundle
 import android.view.View
-import android.widget.Button
-import android.widget.EditText
-import android.widget.Toast
+import android.widget.*
+import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import kotlinx.coroutines.launch
 
 class ExpenseListFragment : Fragment(R.layout.expense_list_fragment) {
 
@@ -22,10 +22,17 @@ class ExpenseListFragment : Fragment(R.layout.expense_list_fragment) {
     private lateinit var expenseAdapter: ExpenseAdapter
     private lateinit var financialTipsButton: Button
 
+    // New UI for currency
+    private lateinit var conversionNeededCheckBox: CheckBox
+    private lateinit var currencySpinner: Spinner
+    private lateinit var convertedCostTextView: TextView
+
     private val expensesList = mutableListOf<Expense>()
 
     private lateinit var footerFragment: FooterFragment
     private lateinit var headerFragment: HeaderFragment
+
+    private val cadRatesMap = mutableMapOf<String, Double>()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -36,18 +43,19 @@ class ExpenseListFragment : Fragment(R.layout.expense_list_fragment) {
         recyclerView = view.findViewById(R.id.recyclerview_expenses)
         financialTipsButton = view.findViewById(R.id.financial_tips_button)
 
-        recyclerView.layoutManager = LinearLayoutManager(context) // Use context here
+        conversionNeededCheckBox = view.findViewById(R.id.conversion_needed_checkbox)
+        currencySpinner = view.findViewById(R.id.currency_spinner)
+        convertedCostTextView = view.findViewById(R.id.converted_cost_textview)
+
+        recyclerView.layoutManager = LinearLayoutManager(context)
         expenseAdapter = ExpenseAdapter(expensesList)
         recyclerView.adapter = expenseAdapter
 
-        // Initialize Fragments
+
         footerFragment = FooterFragment()
         headerFragment = HeaderFragment()
 
-        // Get FragmentManager
         val fragmentManager: FragmentManager = childFragmentManager
-
-        // Add Footer Fragment
         fragmentManager.beginTransaction()
             .replace(R.id.footer_container, footerFragment)
             .commit()
@@ -57,9 +65,10 @@ class ExpenseListFragment : Fragment(R.layout.expense_list_fragment) {
             .replace(R.id.header_container, headerFragment)
             .commit()
 
-        // Load expenses from file
         expensesList.addAll(expenseAdapter.expensesFromFile(requireContext()))
         expenseAdapter.notifyDataSetChanged()
+
+        fetchCadRatesAndSetupSpinner()
 
         addExpenseButton.setOnClickListener {
             addExpense()
@@ -68,30 +77,138 @@ class ExpenseListFragment : Fragment(R.layout.expense_list_fragment) {
         financialTipsButton.setOnClickListener {
             val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://www.easyfinancial.com"))
             startActivity(intent)
-
-
         }
     }
 
-    private fun calcSum(): Double{
-        return expensesList.sumByDouble { it.amount.toDouble() }
+    private fun fetchCadRatesAndSetupSpinner() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            try {
+                val response = RetrofitInstance.api.getExchangeRates("cad")
+                if (response.isSuccessful) {
+                    response.body()?.let { jsonObj ->
+
+                        val date = jsonObj["date"].asString
+                        val cadJson = jsonObj.getAsJsonObject("cad")
+
+
+                        for ((key, value) in cadJson.entrySet()) {
+                            cadRatesMap[key] = value.asDouble
+                        }
+
+                        cadRatesMap["CAD"] = 1.0
+
+
+                        val currencyList = cadRatesMap.keys.sorted()
+                        val adapter = ArrayAdapter(
+                            requireContext(),
+                            android.R.layout.simple_spinner_item,
+                            currencyList.toList()
+                        )
+                        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+                        currencySpinner.adapter = adapter
+
+
+                        val defaultIndex = currencyList.indexOf("CAD")
+                        if (defaultIndex >= 0) {
+                            currencySpinner.setSelection(defaultIndex)
+                        }
+
+                        setupConversionWatcher()
+                    }
+                } else {
+                    Toast.makeText(context, "Failed to fetch CAD rates", Toast.LENGTH_SHORT).show()
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+                Toast.makeText(context, "Error fetching currency rates", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
+
+    private fun setupConversionWatcher() {
+
+        currencySpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onNothingSelected(parent: AdapterView<*>?) {}
+
+            override fun onItemSelected(
+                parent: AdapterView<*>?, view: View?, position: Int, id: Long
+            ) {
+                updateConvertedCostPreview()
+            }
+        }
+
+
+        amountEditText.addTextChangedListener {
+            updateConvertedCostPreview()
+        }
+
+
+        conversionNeededCheckBox.setOnCheckedChangeListener { _, _ ->
+            updateConvertedCostPreview()
+        }
+    }
+
+    private fun updateConvertedCostPreview() {
+        val amountStr = amountEditText.text.toString()
+        if (amountStr.isEmpty()) {
+            convertedCostTextView.text = "Converted Cost: 0.0"
+            return
+        }
+        val amountVal = amountStr.toDoubleOrNull() ?: 0.0
+
+        val selectedCurrency = currencySpinner.selectedItem?.toString() ?: "CAD"
+        val conversionNeeded = conversionNeededCheckBox.isChecked
+
+
+        val finalAmount = if (conversionNeeded) {
+            cadRatesMap[selectedCurrency]?.let { rate ->
+                amountVal * rate
+            } ?: amountVal
+        } else {
+            amountVal
+        }
+
+        convertedCostTextView.text = "Converted Cost: $finalAmount"
     }
 
     private fun addExpense() {
         val name = expenseNameEditText.text.toString()
-        val amount = amountEditText.text.toString()
+        val amountString = amountEditText.text.toString()
 
-        if (name.isNotEmpty() && amount.isNotEmpty()) {
+        if (name.isNotEmpty() && amountString.isNotEmpty()) {
             try {
-                val expenseAmount = amount.toDouble()
-                val newExpense = Expense(name, amount, "2025-03-27", currency = Currency , convertedCost = )
+                val originalAmountCad = amountString.toDouble() // user input is CAD
+                val isConversionNeeded = conversionNeededCheckBox.isChecked
+                val selectedCurrency = currencySpinner.selectedItem?.toString() ?: "CAD"
+
+                val rate = cadRatesMap[selectedCurrency] ?: 1.0
+                val convertedCost = if (isConversionNeeded) {
+                    originalAmountCad * rate
+                } else {
+                    // no conversion
+                    originalAmountCad
+                }
+
+                // Build the new Expense
+                val newExpense = Expense(
+                    name = name,
+                    amount = originalAmountCad,
+                    date = "2025-03-27",
+                    currency = selectedCurrency,
+                    convertedCost = convertedCost
+                )
+
                 expensesList.add(newExpense)
                 expenseAdapter.notifyItemInserted(expensesList.size - 1)
 
-                footerFragment.addExpense(expenseAmount)
+
+                footerFragment.addExpense(originalAmountCad)
+
+
                 expenseAdapter.expensesToFile(requireContext(), expensesList)
 
-                // Clear input fields after adding expense
+
                 expenseNameEditText.text.clear()
                 amountEditText.text.clear()
 
@@ -103,9 +220,13 @@ class ExpenseListFragment : Fragment(R.layout.expense_list_fragment) {
         }
     }
 
+    private fun calcSum(): Double {
+
+        return expensesList.sumOf { it.amount }
+    }
+
     override fun onStart() {
         super.onStart()
-
         footerFragment.addExpense(calcSum())
     }
 }

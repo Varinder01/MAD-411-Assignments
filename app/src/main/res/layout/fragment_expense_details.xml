@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#009688"
@@ -11,26 +12,37 @@
         android:id="@+id/expense_name_details"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
         android:text="Expense Name"
-        android:textColor="#043632"
         android:textSize="18sp" />
 
     <TextView
         android:id="@+id/expense_amount_details"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
         android:text="Amount"
-        android:textColor="#064842"
         android:textSize="18sp" />
 
     <TextView
         android:id="@+id/expense_date_details"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
         android:text="Date"
-        android:textColor="#0B4741"
         android:textSize="18sp" />
+
+    <!-- Optional: Show currency -->
+    <TextView
+        android:id="@+id/expense_currency_details"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Currency"
+        android:textSize="18sp" />
+
+    <!-- Optional: Show converted cost -->
+    <TextView
+        android:id="@+id/expense_converted_details"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Converted Cost"
+        android:textSize="18sp" />
+
 </LinearLayout>
