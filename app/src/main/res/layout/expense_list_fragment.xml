@@ -31,7 +31,11 @@
         android:id="@+id/conversion_needed_checkbox"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Conversion Needed?" />
+        android:text="Conversion Needed?"
+        android:textColor="#F6F1F1"
+        android:textColorHighlight="#1D2F2D"
+        android:textColorHint="#1E312F"
+        android:textColorLink="#091918" />
 
     <Spinner
         android:id="@+id/currency_spinner"
@@ -42,7 +46,8 @@
         android:id="@+id/converted_cost_textview"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Converted Cost: 0.0" />
+        android:text="Converted Cost: 0.0"
+        android:textColor="#F4ECEC" />
 
     <Button
         android:id="@+id/add_expense_button"
